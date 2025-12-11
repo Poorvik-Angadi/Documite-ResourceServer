@@ -1,0 +1,133 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/spring-resource-server",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/reservations": {
+      "post": {
+        "tags": [
+          "room-reservation-controller"
+        ],
+        "summary": "Get Reservations by Date",
+        "description": "Returns all available rooms and reservation details",
+        "operationId": "getReservations",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoomReservationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RoomReservation"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RoomReservation"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "hello-word-api"
+        ],
+        "operationId": "welcome",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RoomReservationRequest": {
+        "type": "object",
+        "properties": {
+          "Date": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2020-01-01",
+            "maxLength": 10,
+            "minLength": 10
+          }
+        }
+      },
+      "RoomReservation": {
+        "type": "object",
+        "properties": {
+          "room_ID": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "guest_ID": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "room_name": {
+            "type": "string"
+          },
+          "room_number": {
+            "type": "string"
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  }
+}
