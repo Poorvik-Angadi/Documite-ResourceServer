@@ -17,10 +17,10 @@ import java.io.IOException;
 
 
 @Component
-public class RequestLoggingFilter extends OncePerRequestFilter {
+public class RequestLoggingFilter {
 
     //private static final Logger logger = LoggerFactory.getLogger(RequestLoggingFilter.class);
-
+/*
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -40,5 +40,5 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
-    }
+    }*/
 }

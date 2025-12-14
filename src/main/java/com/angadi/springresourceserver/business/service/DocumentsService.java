@@ -9,6 +9,7 @@ import com.angadi.springresourceserver.data.repository.GDocumentRepository;
 import com.angadi.springresourceserver.data.repository.UserRepository;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -25,43 +26,56 @@ public class DocumentsService {
 
 
     @Autowired
-    public DocumentsService(GDocumentRepository gDocumentRepository, UserRepository userRepository){
+    public DocumentsService(GDocumentRepository gDocumentRepository, UserRepository userRepository) {
         this.gDocumentRepository = gDocumentRepository;
         this.userRepository = userRepository;
     }
 
-    public List<Document> getDocumentsByName(String documentName,@AuthenticationPrincipal Jwt jwt){
+    public List<Document> getDocumentsByName(String documentName, @AuthenticationPrincipal Jwt jwt) {
 
         UsersDomain user = null;
-        if(jwt.getClaims().get("name")!=null){
+        if (jwt.getClaims().get("name") != null) {
             user = this.getUserDetails((String) jwt.getClaims().get("name"));
         }
 
-        if(documentName.isEmpty() || documentName.toLowerCase().equals("get all")){
+        if (documentName.isEmpty() || documentName.toLowerCase().equals("get all")) {
             return this.documentsMapping(gDocumentRepository.findGdocumentByUserid(user.getUserID()));
+        } else {
+            return this.documentsMapping(gDocumentRepository.findGDocumentByUseridAndName(user.getUserID(), documentName));
         }
-        else {
-            return this.documentsMapping(gDocumentRepository.findGDocumentByUseridAndName(user.getUserID(),documentName));
-        }
-
 
 
     }
 
 
-    public List<Document> getDocumentsByType(@Nullable Collection<String> documentType, @AuthenticationPrincipal Jwt jwt){
+    public List<Document> getDocumentsByType(@Nullable Collection<String> documentType, Authentication authentication) {
 
         UsersDomain user = null;
-        if(jwt.getClaims().get("name")!=null){
-            user = this.getUserDetails((String) jwt.getClaims().get("name"));
-        assert user != null;
-        if(documentType == null || documentType.contains("Get All")){
-            return this.documentsMapping(gDocumentRepository.findGdocumentByUserid(user.getUserID()));
-        }
-        else {
 
-            return this.documentsMapping(gDocumentRepository.findGDocumentByUseridAndTypeIn(user.getUserID(),documentType));
-        }
+        if (authentication.getPrincipal() instanceof Jwt) {
+            Jwt principal = (Jwt) authentication.getPrincipal();
+            // You can now access claims from the JWT object
+            String username = principal.getSubject(); // typically the 'sub' claim
+            Map<String, Object> claimValue = principal.getClaims();
+
+
+            if (claimValue.get("given_name") != null || claimValue.get("email") != null) {
+
+                user = this.getUserDetailsbyEmail((String) claimValue.get("email"));
+                if (user == null) {
+                    user = this.getUserDetails((String) claimValue.get("given_name"));
+                }
+
+                assert user != null;
+
+                if (documentType == null || documentType.contains("Get All")) {
+                    return this.documentsMapping(gDocumentRepository.findGdocumentByUserid(user.getUserID()));
+                } else {
+
+                    return this.documentsMapping(gDocumentRepository.findGDocumentByUseridAndTypeIn(user.getUserID(), documentType));
+                }
+
+            }
 
         }
         return null;
@@ -69,9 +83,9 @@ public class DocumentsService {
 
     }
 
-    public List<Document> documentsMapping(Iterable<GDocument> gDocuments){
+    public List<Document> documentsMapping(Iterable<GDocument> gDocuments) {
         List<Document> documentsList = new ArrayList<>();
-        gDocuments.forEach( gDocument -> {
+        gDocuments.forEach(gDocument -> {
 
             Document document = new Document();
             document.setDocName(gDocument.getName());
@@ -84,12 +98,22 @@ public class DocumentsService {
         return documentsList;
     }
 
-    public UsersDomain getUserDetails(String userName){
+    public UsersDomain getUserDetails(String userName) {
 
         Iterable<Users> users = userRepository.findUsersByUserName(userName);
-        UsersDomain userDomain = StreamSupport.stream(users.spliterator(),false)
+        UsersDomain userDomain = StreamSupport.stream(users.spliterator(), false)
                 .findFirst()
-                .map ( o1 -> new UsersDomain(o1.getUserName(),o1.getUserId())).orElseGet(null);
+                .map(o1 -> new UsersDomain(o1.getUserName(), o1.getUserId())).orElseGet(null);
+
+        return userDomain;
+    }
+
+    public UsersDomain getUserDetailsbyEmail(String email) {
+
+        Iterable<Users> users = userRepository.findUsersByEmail(email);
+        UsersDomain userDomain = StreamSupport.stream(users.spliterator(), false)
+                .findFirst()
+                .map(o1 -> new UsersDomain(o1.getUserName(), o1.getUserId())).orElseGet(null);
 
         return userDomain;
     }

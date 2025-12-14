@@ -12,7 +12,7 @@
 	<artifactId>spring-resource-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>spring-resource-server</name>
-	<description>Spring Boot Resource for WSO2</description>
+	<description>Spring Boot Resource for documite</description>
 	<url/>
 	<licenses>
 		<license/>

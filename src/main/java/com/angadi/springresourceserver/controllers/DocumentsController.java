@@ -11,7 +11,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,10 +35,10 @@ public class DocumentsController {
     })
     @PostMapping("/getdocuments")
     @ResponseStatus(HttpStatus.OK)
-    public List<Document> getDocuments(@RequestBody(required = true) DocumentsRequest request, @Parameter(hidden=true) @AuthenticationPrincipal Jwt jwt){
+    public List<Document> getDocuments(@RequestBody(required = true) DocumentsRequest request, @Parameter(hidden=true) Authentication authentication
+                                       ){
 
-        if(jwt.getClaims().get("name") == null ){
-        }
-        return this.documentsService.getDocumentsByType(request.getDocName(),jwt);
+
+        return this.documentsService.getDocumentsByType(request.getDocName(),authentication);
     }
 }

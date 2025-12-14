@@ -1,6 +1,8 @@
 spring:
   config:
-    import: classpath:connection.yaml
+    import:
+      - classpath:connection.yaml
+      - classpath:oauth-google-resource.yaml
   application:
     name: spring-resource-server
   jpa:
@@ -12,12 +14,6 @@ spring:
   sql:
     init:
       platform: postgresql
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${WSO2IS_URL:https://localhost:9443}/oauth2/token
-
 
 server:
   servlet:
