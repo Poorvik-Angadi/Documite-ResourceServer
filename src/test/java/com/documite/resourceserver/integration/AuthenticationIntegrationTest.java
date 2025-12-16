@@ -3,6 +3,7 @@ package com.documite.resourceserver.integration;
 import com.documite.resourceserver.model.Resource;
 import com.documite.resourceserver.model.User;
 import com.documite.resourceserver.repository.ResourceRepository;
+import com.documite.resourceserver.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,12 +36,16 @@ class AuthenticationIntegrationTest {
     @Autowired
     private ResourceRepository resourceRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     private Resource testResource;
     private User testUser;
 
     @BeforeEach
     void setUp() {
         resourceRepository.deleteAll();
+        userRepository.deleteAll();
         testResource = new Resource("Test Document", "A test document", "DOCUMENT", 1L);
         testUser = new User("testuser", "password123", "test@example.com", "USER");
     }
@@ -48,6 +53,7 @@ class AuthenticationIntegrationTest {
     @AfterEach
     void tearDown() {
         resourceRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
