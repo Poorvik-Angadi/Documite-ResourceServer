@@ -1,0 +1,3 @@
+- Write Test cases
+- Host as War in docker
+- Access with Access token rather than identity token
