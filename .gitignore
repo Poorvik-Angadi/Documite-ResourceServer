@@ -36,3 +36,9 @@ Thumbs.db
 # H2 Database
 *.db
 *.trace.db
+
+
+### VS Code ###
+.vscode/
+/src/main/resources/connection.yaml
+/src/main/resources/oauth-google-resource.yaml
