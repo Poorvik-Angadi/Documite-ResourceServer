@@ -15,6 +15,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            // CSRF disabled for stateless REST API and testing purposes
+            // In production, enable CSRF protection for web applications
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/api/users/**").hasAnyRole("ADMIN", "USER")

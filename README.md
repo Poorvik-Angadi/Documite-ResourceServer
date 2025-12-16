@@ -164,11 +164,24 @@ src/
 
 ## Security
 
+**⚠️ IMPORTANT: This is a sample/testing project. Do not use in production without proper security hardening.**
+
+Current security configuration:
 - All endpoints require authentication
 - Basic HTTP authentication is configured
 - Role-based access control (RBAC) for USER and ADMIN roles
-- Password encoding with BCrypt
-- CSRF protection enabled
+- Password encoding with BCrypt (configured but not enforced in models)
+- CSRF protection is **disabled** for stateless REST API testing
+
+### For Production Use:
+- Enable CSRF protection for web applications
+- Implement proper password hashing before storing in database
+- Use HTTPS/TLS for all communications
+- Implement rate limiting and request throttling
+- Add custom exception handling with proper error messages
+- Use JWT or OAuth2 for token-based authentication
+- Implement comprehensive input validation
+- Add logging and monitoring for security events
 
 ## Configuration
 
