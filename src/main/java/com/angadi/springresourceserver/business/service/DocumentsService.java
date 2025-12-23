@@ -103,7 +103,7 @@ public class DocumentsService {
         Iterable<Users> users = userRepository.findUsersByUserName(userName);
         UsersDomain userDomain = StreamSupport.stream(users.spliterator(), false)
                 .findFirst()
-                .map(o1 -> new UsersDomain(o1.getUserName(), o1.getUserId())).orElseGet(null);
+                .map(o1 -> new UsersDomain(o1.getUserName(), o1.getUserId())).orElse(null);
 
         return userDomain;
     }
@@ -113,7 +113,7 @@ public class DocumentsService {
         Iterable<Users> users = userRepository.findUsersByEmail(email);
         UsersDomain userDomain = StreamSupport.stream(users.spliterator(), false)
                 .findFirst()
-                .map(o1 -> new UsersDomain(o1.getUserName(), o1.getUserId())).orElseGet(null);
+                .map(o1 -> new UsersDomain(o1.getUserName(), o1.getUserId())).orElse(null);
 
         return userDomain;
     }
